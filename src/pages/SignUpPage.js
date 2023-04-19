@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import MyWalletLogo from "../components/MyWalletLogo";
-import axios from "axios";
+import api from "../axios";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -11,10 +11,7 @@ export default function SignUpPage() {
   const [senha, setSenha] = useState("");
   const [confSenha, setConfSenha] = useState("");
   const navigate = useNavigate();
-  const baseURL = process.env.REACT_APP_API_URL;
-  const api = axios.create({
-    baseURL: baseURL
-  })
+
 
   function cadastrar(e) {
     e.preventDefault();
