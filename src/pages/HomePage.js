@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { BiExit } from "react-icons/bi";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import api from "../axios";
 import Transaction from "../components/Transaction";
@@ -13,30 +13,41 @@ export default function HomePage({ setTransacao }) {
   const [saldo, setSaldo] = useState(0);
   const token = localStorage.getItem("token");
   const { nome } = useContext(Context);
+  const navigate = useNavigate();
 
   function criarTransacao(tipo) {
     setTransacao(tipo);
   }
 
-  useEffect(() => {
-    const request = api.get("/transacoes", { headers: { Authorization: `Bearer ${token}` } });
+  function logOut() {
+    localStorage.removeItem("token");
+    navigate("/");
+  }
 
-    request.then(response => {
-      setTransacoes(response.data);
-      const entradas = response.data.filter(t => t.tipo === "entrada");
-      const saidas = response.data.filter(t => t.tipo === "saida");
-      const entradasPositivas = entradas.map(e => Number(e.valor));
-      const saidasNegativas = saidas.map(s => -Number(s.valor));
-      const todasTransacoes = [...entradasPositivas, ...saidasNegativas];
-      const saldo = Number(todasTransacoes.reduce((a, b) => a + b, 0));
-      setSaldo(saldo);
-    })
+  useEffect(() => {
+
+    if (!token) {
+      navigate("/");
+    } else {
+      const request = api.get("/transacoes", { headers: { Authorization: `Bearer ${token}` } });
+
+      request.then(response => {
+        setTransacoes(response.data);
+        const entradas = response.data.filter(t => t.tipo === "entrada");
+        const saidas = response.data.filter(t => t.tipo === "saida");
+        const entradasPositivas = entradas.map(e => Number(e.valor));
+        const saidasNegativas = saidas.map(s => -Number(s.valor));
+        const todasTransacoes = [...entradasPositivas, ...saidasNegativas];
+        const saldo = Number(todasTransacoes.reduce((a, b) => a + b, 0));
+        setSaldo(saldo);
+      })
+    }
   }, [])
   return (
     <HomeContainer>
       <Header>
         <h1>Olá, {nome}</h1>
-        <BiExit />
+        <BiExit onClick={logOut} />
       </Header>
 
       <TransactionsContainer>
@@ -45,7 +56,7 @@ export default function HomePage({ setTransacao }) {
         </Transactions>
         <article>
           <strong>Saldo</strong>
-          <Value color={saldo > 0 ? "positivo" : "negativo"}>{saldo.toFixed(2).toString()}</Value>
+          <Value color={saldo >= 0 ? "positivo" : "negativo"}>{saldo.toFixed(2).toString()}</Value>
         </article>
       </TransactionsContainer>
 

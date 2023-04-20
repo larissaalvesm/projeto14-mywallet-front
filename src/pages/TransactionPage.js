@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../axios";
 
@@ -9,6 +9,12 @@ export default function TransactionsPage({ transacao }) {
   const [valor, setValor] = useState("");
   const [descricao, setDescricao] = useState("");
 
+  useEffect(() => {
+
+    if (!token) {
+      navigate("/");
+    }
+  }, [])
 
   function salvarTransacao(e) {
     e.preventDefault();
