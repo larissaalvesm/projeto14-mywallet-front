@@ -8,11 +8,11 @@ import Context from "./contexts/Context"
 import { useState } from "react"
 
 export default function App() {
-  const [token, setToken] = useState("");
+  const [nome, setNome] = useState("");
   const [transacao, setTransacao] = useState("transação");
   return (
     <PagesContainer>
-      <Context.Provider value={{ token, setToken }}>
+      <Context.Provider value={{ nome, setNome }}>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<SignInPage />} />

@@ -9,7 +9,7 @@ import Context from "../contexts/Context";
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const { setToken } = useContext(Context);
+  const { setNome } = useContext(Context);
   const navigate = useNavigate();
 
   function fazerLogin(e) {
@@ -23,8 +23,8 @@ export default function SignInPage() {
     const request = api.post("/", obj);
 
     request.then(response => {
-      setToken(response.data);
-      localStorage.setItem("token", response.data);
+      localStorage.setItem("token", response.data.token);
+      setNome(response.data.user);
       navigate("/home");
     });
 

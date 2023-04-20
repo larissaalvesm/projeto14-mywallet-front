@@ -1,6 +1,5 @@
 import styled from "styled-components";
-import Context from "../contexts/Context";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../axios";
 

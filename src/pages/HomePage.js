@@ -2,41 +2,50 @@ import styled from "styled-components";
 import { BiExit } from "react-icons/bi";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import api from "../axios";
+import Transaction from "../components/Transaction";
+import Context from "../contexts/Context";
 
 export default function HomePage({ setTransacao }) {
+
+  const [transacoes, setTransacoes] = useState([]);
+  const [saldo, setSaldo] = useState(0);
+  const token = localStorage.getItem("token");
+  const { nome } = useContext(Context);
 
   function criarTransacao(tipo) {
     setTransacao(tipo);
   }
+
+  useEffect(() => {
+    const request = api.get("/transacoes", { headers: { Authorization: `Bearer ${token}` } });
+
+    request.then(response => {
+      setTransacoes(response.data);
+      const entradas = response.data.filter(t => t.tipo === "entrada");
+      const saidas = response.data.filter(t => t.tipo === "saida");
+      const entradasPositivas = entradas.map(e => Number(e.valor));
+      const saidasNegativas = saidas.map(s => -Number(s.valor));
+      const todasTransacoes = [...entradasPositivas, ...saidasNegativas];
+      const saldo = Number(todasTransacoes.reduce((a, b) => a + b, 0));
+      setSaldo(saldo);
+    })
+  }, [])
   return (
     <HomeContainer>
       <Header>
-        <h1>Olá, Fulano</h1>
+        <h1>Olá, {nome}</h1>
         <BiExit />
       </Header>
 
       <TransactionsContainer>
-        <ul>
-          <ListItemContainer>
-            <div>
-              <span>30/11</span>
-              <strong>Almoço mãe</strong>
-            </div>
-            <Value color={"negativo"}>120,00</Value>
-          </ListItemContainer>
-
-          <ListItemContainer>
-            <div>
-              <span>15/11</span>
-              <strong>Salário</strong>
-            </div>
-            <Value color={"positivo"}>3000,00</Value>
-          </ListItemContainer>
-        </ul>
-
+        <Transactions>
+          {transacoes.map(t => <Transaction key={t._id} valor={t.valor} descricao={t.descricao} dataHora={t.dataHora} tipo={t.tipo} />)}
+        </Transactions>
         <article>
           <strong>Saldo</strong>
-          <Value color={"positivo"}>2880,00</Value>
+          <Value color={saldo > 0 ? "positivo" : "negativo"}>{saldo.toFixed(2).toString()}</Value>
         </article>
       </TransactionsContainer>
 
@@ -75,6 +84,7 @@ const Header = styled.header`
   color: white;
 `
 const TransactionsContainer = styled.article`
+  max-height: calc(100vh - 275px);
   flex-grow: 1;
   background-color: #fff;
   color: #000;
@@ -84,8 +94,9 @@ const TransactionsContainer = styled.article`
   flex-direction: column;
   justify-content: space-between;
   article {
-    display: flex;
-    justify-content: space-between;   
+    bottom: 5px; 
+    display:flex;
+    justify-content: space-between;
     strong {
       font-weight: 700;
       text-transform: uppercase;
@@ -96,10 +107,11 @@ const ButtonsContainer = styled.section`
   margin-top: 15px;
   margin-bottom: 0;
   display: flex;
-  gap: 15px;
+  justify-content: center;
+  gap:15px;
   
   button {
-    width: 50%;
+    width: 45vw;
     height: 115px;
     font-size: 22px;
     text-align: left;
@@ -116,15 +128,6 @@ const Value = styled.div`
   text-align: right;
   color: ${(props) => (props.color === "positivo" ? "green" : "red")};
 `
-const ListItemContainer = styled.li`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-  color: #000000;
-  margin-right: 10px;
-  div span {
-    color: #c6c6c6;
-    margin-right: 10px;
-  }
+const Transactions = styled.div`
+    overflow-y: scroll;
 `
