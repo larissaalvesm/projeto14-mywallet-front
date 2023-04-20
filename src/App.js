@@ -9,6 +9,7 @@ import { useState } from "react"
 
 export default function App() {
   const [token, setToken] = useState("");
+  const [transacao, setTransacao] = useState("transação");
   return (
     <PagesContainer>
       <Context.Provider value={{ token, setToken }}>
@@ -16,8 +17,8 @@ export default function App() {
           <Routes>
             <Route path="/" element={<SignInPage />} />
             <Route path="/cadastro" element={<SignUpPage />} />
-            <Route path="/home" element={<HomePage />} />
-            <Route path="/nova-transacao/:tipo" element={<TransactionsPage />} />
+            <Route path="/home" element={<HomePage setTransacao={setTransacao} />} />
+            <Route path="/nova-transacao/:tipo" element={<TransactionsPage transacao={transacao} />} />
           </Routes>
         </BrowserRouter>
       </Context.Provider>

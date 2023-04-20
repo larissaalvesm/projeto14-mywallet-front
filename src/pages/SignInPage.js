@@ -30,8 +30,7 @@ export default function SignInPage() {
 
     request.catch(err => {
       alert(err.response.data)
-    }
-    );
+    });
   }
   return (
     <SingInContainer>

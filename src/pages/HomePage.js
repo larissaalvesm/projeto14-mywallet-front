@@ -1,8 +1,13 @@
-import styled from "styled-components"
-import { BiExit } from "react-icons/bi"
-import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai"
+import styled from "styled-components";
+import { BiExit } from "react-icons/bi";
+import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
-export default function HomePage() {
+export default function HomePage({ setTransacao }) {
+
+  function criarTransacao(tipo) {
+    setTransacao(tipo);
+  }
   return (
     <HomeContainer>
       <Header>
@@ -37,14 +42,18 @@ export default function HomePage() {
 
 
       <ButtonsContainer>
-        <button>
-          <AiOutlinePlusCircle />
-          <p>Nova <br /> entrada</p>
-        </button>
-        <button>
-          <AiOutlineMinusCircle />
-          <p>Nova <br />saída</p>
-        </button>
+        <Link to={"/nova-transacao/entrada"}>
+          <button onClick={() => criarTransacao("entrada")}>
+            <AiOutlinePlusCircle />
+            <p>Nova <br /> entrada</p>
+          </button>
+        </Link>
+        <Link to={"/nova-transacao/saida"}>
+          <button onClick={() => criarTransacao("saida")}>
+            <AiOutlineMinusCircle />
+            <p>Nova <br />saída</p>
+          </button>
+        </Link>
       </ButtonsContainer>
 
     </HomeContainer>
