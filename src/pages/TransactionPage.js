@@ -21,10 +21,11 @@ export default function TransactionsPage() {
     e.preventDefault();
     const obj = {
       valor,
-      descricao
+      descricao,
+      tipo
     }
 
-    const request = api.post(`/nova-transacao/${tipo}`,
+    const request = api.post(`/nova-transacao`,
       obj,
       { headers: { Authorization: `Bearer ${token}` } });
 
