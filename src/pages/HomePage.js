@@ -2,25 +2,21 @@ import styled from "styled-components";
 import { BiExit } from "react-icons/bi";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../axios";
 import Transaction from "../components/Transaction";
-import Context from "../contexts/Context";
 
-export default function HomePage({ setTransacao }) {
+export default function HomePage() {
 
   const [transacoes, setTransacoes] = useState([]);
   const [saldo, setSaldo] = useState(0);
   const token = localStorage.getItem("token");
-  const { nome } = useContext(Context);
+  const nome = localStorage.getItem("user");
   const navigate = useNavigate();
-
-  function criarTransacao(tipo) {
-    setTransacao(tipo);
-  }
 
   function logOut() {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     navigate("/");
   }
 
@@ -50,26 +46,27 @@ export default function HomePage({ setTransacao }) {
         <BiExit onClick={logOut} />
       </Header>
 
-      <TransactionsContainer>
-        <Transactions>
+      <TransactionsContainer transacoes={transacoes}>
+        <Transactions transacoes={transacoes}>
           {transacoes.map(t => <Transaction key={t._id} valor={t.valor} descricao={t.descricao} dataHora={t.dataHora} tipo={t.tipo} />)}
         </Transactions>
         <article>
           <strong>Saldo</strong>
           <Value color={saldo >= 0 ? "positivo" : "negativo"}>{saldo.toFixed(2).toString()}</Value>
         </article>
+        <p>Não há registros de<br /> entrada ou saída</p>
       </TransactionsContainer>
 
 
       <ButtonsContainer>
         <Link to={"/nova-transacao/entrada"}>
-          <button onClick={() => criarTransacao("entrada")}>
+          <button>
             <AiOutlinePlusCircle />
             <p>Nova <br /> entrada</p>
           </button>
         </Link>
         <Link to={"/nova-transacao/saida"}>
-          <button onClick={() => criarTransacao("saida")}>
+          <button>
             <AiOutlineMinusCircle />
             <p>Nova <br />saída</p>
           </button>
@@ -106,12 +103,21 @@ const TransactionsContainer = styled.article`
   justify-content: space-between;
   article {
     bottom: 5px; 
-    display:flex;
+    display: ${(props) => (props.transacoes.length === 0 ? "none" : "flex")};
     justify-content: space-between;
     strong {
       font-weight: 700;
       text-transform: uppercase;
     }
+  }
+  p{
+    height: 100%;
+    display: ${(props) => (props.transacoes.length !== 0 ? "none" : "flex")};
+    font-size: 20px;
+    color: #868686;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
 `
 const ButtonsContainer = styled.section`
@@ -141,4 +147,5 @@ const Value = styled.div`
 `
 const Transactions = styled.div`
     overflow-y: scroll;
+    display: ${(props) => (props.transacoes.length === 0 ? "none" : "flex")};
 `

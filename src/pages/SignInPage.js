@@ -1,15 +1,13 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import MyWalletLogo from "../components/MyWalletLogo";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../axios";
-import Context from "../contexts/Context";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const { setNome } = useContext(Context);
   const navigate = useNavigate();
 
   function fazerLogin(e) {
@@ -24,7 +22,7 @@ export default function SignInPage() {
 
     request.then(response => {
       localStorage.setItem("token", response.data.token);
-      setNome(response.data.user);
+      localStorage.setItem("user", response.data.user);
       navigate("/home");
     });
 
