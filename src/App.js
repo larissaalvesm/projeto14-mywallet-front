@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage"
 import SignInPage from "./pages/SignInPage"
 import SignUpPage from "./pages/SignUpPage"
 import TransactionsPage from "./pages/TransactionPage"
+import NewTransactionPage from "./pages/NewTransactionPage"
 
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
           <Route path="/cadastro" element={<SignUpPage />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/nova-transacao/:tipo" element={<TransactionsPage />} />
+          <Route path="/nova-transacao" element={<NewTransactionPage />} />
         </Routes>
       </BrowserRouter>
     </PagesContainer>
