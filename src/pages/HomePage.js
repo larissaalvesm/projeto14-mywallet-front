@@ -50,10 +50,10 @@ export default function HomePage() {
         <Transactions transacoes={transacoes}>
           {transacoes.map(t => <Transaction key={t._id} valor={t.valor} descricao={t.descricao} dataHora={t.dataHora} tipo={t.tipo} />)}
         </Transactions>
-        <article>
+        <Saldo transacoes={transacoes}>
           <strong>Saldo</strong>
           <Value color={saldo >= 0 ? "positivo" : "negativo"}>{saldo.toFixed(2).toString()}</Value>
-        </article>
+        </Saldo>
         <p>Não há registros de<br /> entrada ou saída</p>
       </TransactionsContainer>
 
@@ -91,7 +91,7 @@ const Header = styled.header`
   font-size: 26px;
   color: white;
 `
-const TransactionsContainer = styled.article`
+const TransactionsContainer = styled.div`
   max-height: calc(100vh - 275px);
   flex-grow: 1;
   background-color: #fff;
@@ -101,15 +101,6 @@ const TransactionsContainer = styled.article`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  article {
-    bottom: 5px; 
-    display: ${(props) => (props.transacoes.length === 0 ? "none" : "flex")};
-    justify-content: space-between;
-    strong {
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-  }
   p{
     height: 100%;
     display: ${(props) => (props.transacoes.length !== 0 ? "none" : "flex")};
@@ -119,6 +110,15 @@ const TransactionsContainer = styled.article`
     justify-content: center;
     text-align: center;
   }
+`
+const Saldo = styled.div`
+    bottom: 5px; 
+    display: ${(props) => (props.transacoes.length === 0 ? "none" : "flex")};
+    justify-content: space-between;
+    strong {
+      font-weight: 700;
+      text-transform: uppercase;
+    }
 `
 const ButtonsContainer = styled.section`
   margin-top: 15px;
@@ -148,4 +148,5 @@ const Value = styled.div`
 const Transactions = styled.div`
     overflow-y: scroll;
     display: ${(props) => (props.transacoes.length === 0 ? "none" : "flex")};
+    flex-direction: column;
 `

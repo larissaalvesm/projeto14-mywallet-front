@@ -1,17 +1,15 @@
 import styled from "styled-components"
 
 export default function Transaction({ valor, descricao, dataHora, tipo }) {
-    return (
-        <ul>
-            <ListItemContainer>
-                <div>
-                    <span>{dataHora.substring(0, 5)}</span>
-                    <strong>{descricao}</strong>
-                </div>
-                <Value color={tipo === "entrada" ? "positivo" : "negativo"}>{Number(valor).toFixed(2)}</Value>
-            </ListItemContainer>
-        </ul>
-    )
+  return (
+    <ListItemContainer>
+      <div>
+        <span>{dataHora.substring(0, 5)}</span>
+        <strong>{descricao}</strong>
+      </div>
+      <Value color={tipo === "entrada" ? "positivo" : "negativo"}>{Number(valor).toFixed(2)}</Value>
+    </ListItemContainer>
+  )
 }
 
 const Value = styled.div`
@@ -19,7 +17,7 @@ const Value = styled.div`
   text-align: right;
   color: ${(props) => (props.color === "positivo" ? "green" : "red")};
 `
-const ListItemContainer = styled.li`
+const ListItemContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
