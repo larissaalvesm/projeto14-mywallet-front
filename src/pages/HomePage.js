@@ -8,7 +8,7 @@ import Transaction from "../components/Transaction";
 
 export default function HomePage() {
 
-  const [transacoes, setTransacoes] = useState([]);
+  const [transacoes, setTransacoes] = useState(null);
   const [saldo, setSaldo] = useState(0);
   const token = localStorage.getItem("token");
   const nome = localStorage.getItem("user");
@@ -38,7 +38,40 @@ export default function HomePage() {
         setSaldo(saldo);
       })
     }
-  }, [])
+  }, []);
+
+  if (transacoes === null) {
+    return (
+      <HomeContainer>
+        <Header>
+          <h1>Olá, {nome}</h1>
+          <BiExit onClick={logOut} />
+        </Header>
+
+        <EmptyTransactionsContainer >
+          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921" />
+        </EmptyTransactionsContainer>
+
+        <ButtonsContainer>
+          <Link to={"/nova-transacao/entrada"}>
+            <button disabled>
+              <AiOutlinePlusCircle />
+              <p>Nova <br /> entrada</p>
+            </button >
+          </Link>
+          <Link to={"/nova-transacao/saida"}>
+            <button disabled>
+              <AiOutlineMinusCircle />
+              <p>Nova <br />saída</p>
+            </button>
+          </Link>
+        </ButtonsContainer>
+
+      </HomeContainer>
+
+    )
+  }
+
   return (
     <HomeContainer>
       <Header>
@@ -59,13 +92,13 @@ export default function HomePage() {
 
 
       <ButtonsContainer>
-        <Link to={"/nova-transacao/entrada"}>
+        <Link to="/nova-transacao/entrada">
           <button>
             <AiOutlinePlusCircle />
             <p>Nova <br /> entrada</p>
           </button>
         </Link>
-        <Link to={"/nova-transacao/saida"}>
+        <Link to="/nova-transacao/saida">
           <button>
             <AiOutlineMinusCircle />
             <p>Nova <br />saída</p>
@@ -111,6 +144,21 @@ const TransactionsContainer = styled.div`
     text-align: center;
   }
 `
+const EmptyTransactionsContainer = styled.div`
+  max-height: calc(100vh - 275px);
+  flex-grow: 1;
+  background-color: #fff;
+  color: #000;
+  border-radius: 5px;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  img{
+    max-height: 250px;
+    max-width: 100%;
+  }
+`
 const Saldo = styled.div`
     bottom: 5px; 
     display: ${(props) => (props.transacoes.length === 0 ? "none" : "flex")};
@@ -124,11 +172,10 @@ const ButtonsContainer = styled.section`
   margin-top: 15px;
   margin-bottom: 0;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   gap:15px;
-  
   button {
-    width: 45vw;
+    width: calc(50vw - 30px);
     height: 115px;
     font-size: 22px;
     text-align: left;
